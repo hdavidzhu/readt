@@ -25,8 +25,12 @@ a:visited {
   border-color: #BBB;
 }
 
-.border-bottom-dotted {
+.border-comment {
   border-bottom-style: dotted;
+  border-bottom-width: 1px;
+  border-color: #BBB;
+  border-left-style: dotted;
+  border-left-width: 1px;
 }
 
 .pre-wrap {

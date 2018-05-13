@@ -41,10 +41,18 @@ function flatten(comment) {
   replies = []
   _flatten = (comment) => {
     if (!comment) return
-    console.log(comment)
-    replies.push(comment.data.body)
+    if (comment.data.body) replies.push(convertLinks(comment.data.body))
     _flatten(_.get(comment, 'data.replies.data.children[0]'))
   }
   _flatten(comment)
   return replies
+}
+
+function convertLinks(string) {
+  return string.replace(/\[.+?\]\(.+?\)/g, (section) => {
+    var name = section.match(/\[(.+)\]/)[1]
+    var link = section.match(/\((.+)\)/)[1]
+    // TODO: Handle reddit links
+    return `<a href="${link}">${name}</a>`
+  })
 }

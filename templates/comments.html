@@ -4,7 +4,7 @@
       <li>
         <ul class="list-reset">
           {{~comment:item:index}}
-            <li class="ml{{=index}} mb1 pb1 pre-wrap border-bottom border-bottom-dotted">{{=item}}</li>
+            <li class="ml{{? index > 4}}4{{??}}{{=index}}{{?}} p1 pre-wrap border-comment">{{=item}}</li>
           {{~}}
         </ul>
       </li>
