@@ -1,0 +1,23 @@
+<div>
+  <ul class="list-reset">
+    {{~it.listItems:listItem}}
+      <li class="py2 border-bottom">
+        <a
+          href="{{=listItem.data.url}}"
+          rel="noopener noreferrer"
+          target="_blank"
+          >
+          {{=listItem.data.title}}
+        </a>
+        <br/>
+        <a
+          class="h6"
+          onclick="goToComment(this, '{{=listItem.data.permalink}}')"
+          rel="noopener noreferrer"
+          target="_blank">
+          [{{=listItem.data.ups}} u | {{=listItem.data.num_comments}} c]
+        </a>
+      </li>
+    {{~}}
+  </ul>
+</div>
