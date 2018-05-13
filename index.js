@@ -18,7 +18,6 @@ const root = document.getElementById('root')
 
 async function visit(name, options) {
   root.innerHTML = await render(name, options)
-  window.scrollTo(0, 0)
 }
 
 var router = Router({
