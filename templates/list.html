@@ -12,9 +12,8 @@
         <br/>
         <a
           class="h6"
-          onclick="goToComment(this, '{{=listItem.data.permalink}}')"
-          rel="noopener noreferrer"
-          target="_blank">
+          href="#{{=listItem.data.permalink}}"
+          >
           [{{=listItem.data.ups}} u | {{=listItem.data.num_comments}} c]
         </a>
       </li>

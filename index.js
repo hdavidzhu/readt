@@ -1,41 +1,46 @@
-Promise.all([
-  axios.get('./templates/comments.html'),
-  axios.get('./templates/list.html')
-]).then(([commentsRes, listRes]) => {
-  window.templates = {
-    comments: commentsRes.data,
-    list: listRes.data
-  }
+// LOAD TEMPLATES ==============================================================
 
-  function getQuery() {
-    var search = location.search.substring(1)
-    return JSON.parse(
-      '{"' + search.replace(/&/g, '","').replace(/=/g,'":"') + '"}',
-      (key, value) => key === "" ? value : decodeURIComponent(value)
-    )
-  }
-  const href = window.location.href
-  const url = `https://www.reddit.com/r/${getQuery().r}.json`
+const TMPL_FN = {}
+async function render(templateName, options) {
+  if (!TMPL_FN[templateName])
+    TMPL_FN[templateName] = await loadTemplate(templateName)
+  return TMPL_FN[templateName](options)
+}
 
-  axios.get(url).then((result) => {
-    console.log(window.location.href)
+async function loadTemplate(name) {
+  const templateRes = await axios.get(`./templates/${name}.html`)
+  return doT.template(templateRes.data)
+}
+
+// DEFINE ROUTES ===============================================================
+
+const root = document.getElementById('root')
+
+var router = Router({
+
+  '/r/:subreddit': async function(subreddit) {
+    const url = `https://www.reddit.com/r/${subreddit}.json`
+    const result = await axios.get(url)
     const children = result.data.data.children
-    const templateFunction = doT.template(window.templates.list)
-    const html = templateFunction({listItems: children})
-    const root = document.getElementById('root')
+    const html = await render('list', {listItems: children})
     root.innerHTML = html
-  })
+  },
+
+  '/r/:subreddit/comments/((\w|.)*)': async function(subreddit, subPath) {
+    const result = await axios.get(`https://www.reddit.com/r/${subreddit}/comments/${subPath.slice(0,-1)}.json`)
+    const comments = result.data[1].data.children.map(flatten)
+    const html = await render('comments', {comments: comments})
+    root.innerHTML = html
+  },
+
+  '/((\w|.)*)': function(path) {
+    throw new Error(`${path} is not yet handled!`)
+  }
 })
 
-function goToComment(ref, url) {
-  axios.get(`https://www.reddit.com${url.slice(0,-1)}.json`).then((result) => {
-    const comments = result.data[1].data.children.map(flatten)
-    const templateFunction = doT.template(window.templates.comments)
-    const html = templateFunction({comments: comments})
-    const root = document.getElementById('root')
-    root.innerHTML = html
-  })
-}
+router.init()
+
+// HELPERS =====================================================================
 
 function flatten(comment) {
   replies = []
@@ -52,7 +57,6 @@ function convertLinks(string) {
   return string.replace(/\[.+?\]\(.+?\)/g, (section) => {
     var name = section.match(/\[(.+)\]/)[1]
     var link = section.match(/\((.+)\)/)[1]
-    // TODO: Handle reddit links
     return `<a href="${link}">${name}</a>`
   })
 }
