@@ -1,13 +1,14 @@
+* {
+  margin: 0;
+  padding: 0;
+}
+
 body {
   color: #222;
   font-family: sans-serif;
   font-weight: 200;
   line-height: 1.5;
   text-decoration: none;
-}
-
-.border-bottom {
-  border-color: #BBB;
 }
 
 a {
@@ -18,4 +19,16 @@ a {
 
 a:visited {
   color: #BBB;
+}
+
+.border-bottom {
+  border-color: #BBB;
+}
+
+.border-bottom-dotted {
+  border-bottom-style: dotted;
+}
+
+.pre-wrap {
+  white-space: pre-wrap;
 }

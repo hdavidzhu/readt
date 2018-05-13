@@ -1,0 +1,13 @@
+<div>
+  <ul class="list-reset">
+    {{~it.comments:comment}}
+      <li>
+        <ul class="list-reset">
+          {{~comment:item:index}}
+            <li class="ml{{=index}} mb1 pb1 pre-wrap border-bottom border-bottom-dotted">{{=item}}</li>
+          {{~}}
+        </ul>
+      </li>
+    {{~}}
+  </ul>
+</div>
