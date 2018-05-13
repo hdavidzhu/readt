@@ -16,26 +16,30 @@ async function loadTemplate(name) {
 
 const root = document.getElementById('root')
 
+async function visit(name, options) {
+  root.innerHTML = await render(name, options)
+  window.scrollTo(0, 0)
+}
+
 var router = Router({
 
   '/r/:subreddit': async function(subreddit) {
-    const url = `https://www.reddit.com/r/${subreddit}.json`
-    const result = await axios.get(url)
-    const children = result.data.data.children
-    const html = await render('list', {listItems: children})
-    root.innerHTML = html
+    const result = await axios.get(`https://www.reddit.com/r/${subreddit}.json`)
+    return await visit('list', {listItems: result.data.data.children})
   },
 
   '/r/:subreddit/comments/((\w|.)*)': async function(subreddit, subPath) {
     const result = await axios.get(`https://www.reddit.com/r/${subreddit}/comments/${subPath.slice(0,-1)}.json`)
-    const comments = result.data[1].data.children.map(flatten)
-    const html = await render('comments', {comments: comments})
-    root.innerHTML = html
+    return await visit('comments', {
+      comments: result.data[1].data.children.map(flatten)
+    })
   },
 
   '/((\w|.)*)': function(path) {
     throw new Error(`${path} is not yet handled!`)
   }
+}).configure({
+  strict: false
 })
 
 router.init()
