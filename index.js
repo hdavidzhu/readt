@@ -1,5 +1,3 @@
-axios.defaults.headers.common['Access-Control-Allow-Origin'] = 'https://www.reddit.com'
-
 Promise.all([
   axios.get('./templates/list.html')
 ]).then((templateResults) => {
